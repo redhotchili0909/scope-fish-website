@@ -31,6 +31,7 @@ export const SubsystemDetail: React.FC = () => {
                 // console.error('Error fetching logs:', error);
             } else if (data) {
                 const formattedLogs: LogEntry[] = data.map((log: DatabaseLogEntry) => ({
+                    id: log.id,
                     date: new Date(log.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
                     title: log.title,
                     content: log.content,
