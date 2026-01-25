@@ -83,6 +83,7 @@ declare module '@tanstack/react-router' {
 
 const rootElement = document.getElementById('root')!
 if (!rootElement.innerHTML) {
+  console.log('Mounting App... Version: HashRouter Fix')
   const root = ReactDOM.createRoot(rootElement)
   root.render(
     <StrictMode>
