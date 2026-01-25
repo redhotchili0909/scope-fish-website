@@ -33,7 +33,7 @@ The official documentation and development log website for the FishEye Autonomou
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/olincollege/scope-fish-website.git
+   git clone https://github.com/redhotchili0909/scope-fish-website.git
    cd scope-fish-website
    ```
 
