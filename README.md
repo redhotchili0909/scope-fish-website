@@ -1,21 +1,73 @@
-# Olin Course Name
+# React + TypeScript + Vite
 
-This course at Olin College helps students maintain public facing websites for team projects for three main reasons:
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-* Grading - the teaching team reviews the project team pages during final grading, to revisit a given team’s trajectory throughout the course.
-* Inspiring - future students and other curious creators are likely to search these pages when looking for ideas on how to build class and/or personal projects.
-* Showcasing - course projects are often included in student portfolios to demonstrate teaming and prototyping skills as well as design prowess resulting from making tradeoffs appropriate for the project constraints.
+Currently, two official plugins are available:
 
-## Content
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-The teaching team typically encourages teams to view their project pages as a resource for...
+## React Compiler
 
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
 
-## Requirements
+## Expanding the ESLint configuration
 
-Your final project site is required to contain the following elements:
+If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
 
+```js
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
 
-## Considerations
+      // Remove tseslint.configs.recommended and replace with this
+      tseslint.configs.recommendedTypeChecked,
+      // Alternatively, use this for stricter rules
+      tseslint.configs.strictTypeChecked,
+      // Optionally, add this for stylistic rules
+      tseslint.configs.stylisticTypeChecked,
 
-Having students use GitHub Pages comes with its share of tradeoffs. We are committed to iterating our instructions for setting up and updating GitHub pages as necessary to ensure that more than one member of every project team can shape their team’s page. We do not require all team members to use GitHub accounts, but it is prudent for more than one team member to be versed in maintaining a team project page to prevent possible bottlenecks should a team’s designated website guru be unable to update the team page for any reason during a semester.
+      // Other configs...
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
+```
+
+You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+
+```js
+// eslint.config.js
+import reactX from 'eslint-plugin-react-x'
+import reactDom from 'eslint-plugin-react-dom'
+
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
+      // Enable lint rules for React
+      reactX.configs['recommended-typescript'],
+      // Enable lint rules for React DOM
+      reactDom.configs.recommended,
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
+```

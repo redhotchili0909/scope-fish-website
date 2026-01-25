@@ -1,0 +1,80 @@
+@import "tailwindcss";
+
+/* Academic Research Paper Aesthetic */
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;500;600;700&family=Source+Sans+3:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@theme {
+  /* Paper-like Palette */
+  --color-bg: #faf9f7;
+  --color-surface: #ffffff;
+  --color-panel: #f5f4f1;
+  --color-border: #e5e4e0;
+  --color-border-strong: #d0cfcb;
+
+  /* Academic Accent Colors */
+  --color-primary: #1e3a5f;
+  /* Deep navy - academic, credible */
+  --color-accent: #8b2332;
+  /* Burgundy - scholarly accent */
+  --color-success: #166534;
+  /* Forest green */
+  --color-warning: #b45309;
+  /* Warm amber */
+
+  /* Text */
+  --color-text: #1a1a1a;
+  --color-text-secondary: #4a4a4a;
+  --color-text-muted: #8a8a8a;
+
+  /* Typography - Academic */
+  --font-serif: 'Crimson Pro', Georgia, serif;
+  --font-sans: 'Source Sans 3', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-bg text-text font-sans antialiased leading-relaxed;
+    font-size: 16px;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-serif font-semibold tracking-tight;
+    line-height: 1.2;
+  }
+
+  p {
+    line-height: 1.7;
+  }
+
+  ::selection {
+    @apply bg-primary/20 text-text;
+  }
+}
+
+@layer utilities {
+  .section-heading {
+    @apply text-xs font-sans font-semibold uppercase tracking-widest text-primary mb-2;
+  }
+
+  .card {
+    @apply bg-surface border border-border;
+  }
+
+  .card-hover {
+    @apply transition-all duration-200 hover:border-border-strong hover:shadow-sm;
+  }
+
+  .divider {
+    @apply h-px bg-border my-8;
+  }
+}
