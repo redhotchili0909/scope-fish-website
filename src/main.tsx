@@ -1,6 +1,6 @@
 import { StrictMode } from 'react'
 import ReactDOM from 'react-dom/client'
-import { RouterProvider, createRouter, createRootRoute, createRoute } from '@tanstack/react-router'
+import { RouterProvider, createRouter, createRootRoute, createRoute, createHashHistory } from '@tanstack/react-router'
 import { Layout } from './components/Layout'
 import { Home } from './pages/Home'
 import { Login } from './pages/Login'
@@ -67,9 +67,12 @@ const routeTree = rootRoute.addChildren([
   loginRoute
 ])
 
+// Create hash history for GitHub Pages compatibility
+const hashHistory = createHashHistory()
+
 const router = createRouter({
   routeTree,
-  basepath: '/scope-fish-website'
+  history: hashHistory
 })
 
 declare module '@tanstack/react-router' {
