@@ -5,8 +5,8 @@ import path from 'path'
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  // Ensure assets are served from the correct subdirectory
-  base: '/scope-fish-website/',
+  // Universal deployment path
+  base: './',
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
