@@ -133,8 +133,7 @@ export const SubsystemDetail: React.FC = () => {
     // Combine logs... 
     // Note: We need to preserve the ID for dynamic logs
     const allLogs = [
-        ...dynamicLogs.map(l => ({ ...l, isDynamic: true })),
-        ...(system.logs || []).map(l => ({ ...l, isDynamic: false }))
+        ...dynamicLogs.map(l => ({ ...l, isDynamic: true }))
     ].sort((a, b) =>
         new Date(b.date).getTime() - new Date(a.date).getTime()
     );
