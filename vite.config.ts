@@ -5,8 +5,8 @@ import path from 'path'
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  // Universal deployment path
-  base: './',
+  // Standard base path for personal GitHub Pages project site
+  base: '/scope-fish-website/',
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
