@@ -266,3 +266,103 @@ export const AddLogForm: React.FC<AddLogFormProps> = ({ subsystemId, onLogAdded 
         document.body
     );
 };
+
+interface EditLogFormProps {
+    log: any;
+    onSave: (updatedLog: any) => void;
+    onCancel: () => void;
+}
+
+export const EditLogForm: React.FC<EditLogFormProps> = ({ log, onSave, onCancel }) => {
+    const [formData, setFormData] = useState({
+        title: log.title || '',
+        content: log.content || '',
+        author: log.author || '',
+        date: log.date || new Date().toISOString().split('T')[0],
+        images: log.images || []
+    });
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setIsSubmitting(true);
+
+        const updatedLog = {
+            ...log,
+            ...formData
+        };
+
+        onSave(updatedLog);
+        setIsSubmitting(false);
+    };
+
+    return (
+        <div className="card p-6 border-l-4 border-blue-500">
+            <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                    <div>
+                        <label className="block text-xs font-semibold uppercase tracking-wider text-text-muted mb-1">Date</label>
+                        <input
+                            type="date"
+                            value={formData.date}
+                            onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                            className="w-full px-3 py-2 bg-panel border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50"
+                            required
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-xs font-semibold uppercase tracking-wider text-text-muted mb-1">Author</label>
+                        <input
+                            type="text"
+                            value={formData.author}
+                            onChange={(e) => setFormData({ ...formData, author: e.target.value })}
+                            className="w-full px-3 py-2 bg-panel border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50"
+                            placeholder="Your name"
+                            required
+                        />
+                    </div>
+                </div>
+
+                <div>
+                    <label className="block text-xs font-semibold uppercase tracking-wider text-text-muted mb-1">Title</label>
+                    <input
+                        type="text"
+                        value={formData.title}
+                        onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                        className="w-full px-3 py-2 bg-panel border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50"
+                        placeholder="Log entry title"
+                        required
+                    />
+                </div>
+
+                <div>
+                    <label className="block text-xs font-semibold uppercase tracking-wider text-text-muted mb-1">Content</label>
+                    <textarea
+                        value={formData.content}
+                        onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+                        className="w-full px-3 py-2 bg-panel border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 min-h-[100px]"
+                        placeholder="Describe what happened..."
+                        required
+                    />
+                </div>
+
+                <div className="flex gap-2 justify-end">
+                    <button
+                        type="button"
+                        onClick={onCancel}
+                        className="px-4 py-2 text-text-muted hover:text-text transition-colors"
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        type="submit"
+                        disabled={isSubmitting}
+                        className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors disabled:opacity-50"
+                    >
+                        {isSubmitting ? 'Saving...' : 'Save Changes'}
+                    </button>
+                </div>
+            </form>
+        </div>
+    );
+};

@@ -4,7 +4,7 @@ import { subsystems, LogEntry } from '../lib/data';
 import { supabase, DatabaseLogEntry } from '../lib/supabase';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Cog, Zap, Code, Calendar } from 'lucide-react';
-import { AddLogForm } from '../features/logs/components/AddLogForm';
+import { AddLogForm, EditLogForm } from '../features/logs/components/AddLogForm';
 
 const iconMap: Record<string, React.ReactNode> = {
     mechanical: <Cog className="w-5 h-5" />,
@@ -16,6 +16,7 @@ export const SubsystemDetail: React.FC = () => {
     const { id } = useParams({ from: '/subsystems/$id' });
     const system = subsystems.find(s => s.id === id);
     const [dynamicLogs, setDynamicLogs] = useState<LogEntry[]>([]);
+    const [editingLog, setEditingLog] = useState<LogEntry | null>(null);
 
     useEffect(() => {
         if (!id) return;
@@ -77,6 +78,43 @@ export const SubsystemDetail: React.FC = () => {
             // Refresh logs
             window.location.reload();
         }
+    };
+
+    const handleEdit = (log: LogEntry) => {
+        setEditingLog(log);
+    };
+
+    const handleSaveEdit = async (updatedLog: LogEntry) => {
+        if (!session) {
+            alert('You must be logged in to edit logs. Please log in first.');
+            return;
+        }
+
+        if (!updatedLog.id) return;
+
+        const { error } = await supabase
+            .from('project_logs')
+            .update({
+                title: updatedLog.title,
+                content: updatedLog.content,
+                author: updatedLog.author,
+                date: updatedLog.date,
+                images: updatedLog.images
+            })
+            .eq('id', updatedLog.id);
+
+        if (error) {
+            console.error('Error updating log:', error);
+            alert(`Failed to update log: ${error.message}`);
+        } else {
+            setEditingLog(null);
+            // Refresh logs
+            window.location.reload();
+        }
+    };
+
+    const handleCancelEdit = () => {
+        setEditingLog(null);
     };
 
     if (!system) {
@@ -164,7 +202,15 @@ export const SubsystemDetail: React.FC = () => {
                             transition={{ delay: index * 0.05 }}
                             className="relative group"
                         >
-                            {/* Date header */}
+                            {editingLog && editingLog.id === entry.id ? (
+                                <EditLogForm
+                                    log={editingLog}
+                                    onSave={handleSaveEdit}
+                                    onCancel={handleCancelEdit}
+                                />
+                            ) : (
+                                <>
+                                    {/* Date header */}
                             <div className="flex items-center justify-between mb-3">
                                 <div className="flex items-center gap-2">
                                     <Calendar className="w-4 h-4 text-text-muted" />
@@ -173,6 +219,12 @@ export const SubsystemDetail: React.FC = () => {
 
                                 {session && entry.isDynamic && (
                                     <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <button
+                                            onClick={() => handleEdit(entry)}
+                                            className="text-xs text-blue-500 hover:text-blue-600 transition-colors"
+                                        >
+                                            Edit
+                                        </button>
                                         <button
                                             onClick={() => handleDelete(entry.id)}
                                             className="text-xs text-red-500 hover:text-red-600 transition-colors"
@@ -216,6 +268,8 @@ export const SubsystemDetail: React.FC = () => {
                                     <p className="mt-4 text-sm text-text-muted">— {entry.author}</p>
                                 )}
                             </div>
+                                </>
+                            )}
                         </motion.article>
                     ))}
                 </div>
