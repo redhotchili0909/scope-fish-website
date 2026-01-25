@@ -57,6 +57,11 @@ export const SubsystemDetail: React.FC = () => {
     }, []);
 
     const handleDelete = async (logId: number) => {
+        if (!session) {
+            alert('You must be logged in to delete logs. Please log in first.');
+            return;
+        }
+
         if (!confirm('Are you sure you want to delete this log?')) return;
 
         const { error } = await supabase
@@ -66,7 +71,7 @@ export const SubsystemDetail: React.FC = () => {
 
         if (error) {
             console.error('Error deleting log:', error);
-            alert('Failed to delete log');
+            alert(`Failed to delete log: ${error.message}`);
         } else {
             // Refresh logs
             window.location.reload();
