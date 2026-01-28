@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Bold, Italic, Underline, Type } from 'lucide-react';
+import { Bold, Italic, Underline, Type, Link as LinkIcon } from 'lucide-react';
 
 interface RichTextEditorProps {
     value: string;
@@ -15,6 +15,17 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange,
         document.execCommand(command, false, value);
         editorRef.current?.focus();
         updateContent();
+    };
+
+    const insertLink = () => {
+        const url = prompt('Enter the URL:', 'https://');
+        if (url) {
+            const selection = window.getSelection();
+            const text = selection?.toString() || 'Link';
+            const markdownLink = `[${text}](${url})`;
+            document.execCommand('insertText', false, markdownLink);
+            updateContent();
+        }
     };
 
     const updateContent = () => {
@@ -83,6 +94,14 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange,
                     title="Underline (Ctrl+U)"
                 >
                     <Underline className="w-4 h-4" />
+                </button>
+                <button
+                    type="button"
+                    onClick={insertLink}
+                    className="p-2 hover:bg-bg rounded transition-colors"
+                    title="Insert Link (Markdown)"
+                >
+                    <LinkIcon className="w-4 h-4" />
                 </button>
 
                 <div className="w-px h-6 bg-border mx-1" />

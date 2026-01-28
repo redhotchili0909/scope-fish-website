@@ -203,7 +203,7 @@ export const AddLogForm: React.FC<AddLogFormProps> = ({ subsystemId, onLogAdded 
                             <RichTextEditor
                                 value={formData.content}
                                 onChange={(content) => setFormData({ ...formData, content })}
-                                placeholder="Describe progress, findings, or blocking issues..."
+                                placeholder="Describe progress, findings, or blocking issues... (Markdown supported)"
                             />
                         </div>
 
@@ -355,7 +355,7 @@ export const EditLogForm: React.FC<EditLogFormProps> = ({ log, onSave, onCancel 
                     <RichTextEditor
                         value={formData.content}
                         onChange={(content) => setFormData({ ...formData, content })}
-                        placeholder="Describe what happened..."
+                        placeholder="Describe what happened... (Markdown supported)"
                     />
                 </div>
 

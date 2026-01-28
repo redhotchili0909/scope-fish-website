@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
+import { MarkdownRenderer } from './MarkdownRenderer';
 
 interface ExpandableContentProps {
     content: string;
@@ -21,15 +22,15 @@ export const ExpandableContent: React.FC<ExpandableContentProps> = ({ content, m
         <div className="relative">
             <div
                 ref={contentRef}
-                className={`text-text-secondary leading-relaxed whitespace-pre-wrap transition-[max-height] duration-300 ease-in-out ${!isExpanded ? 'overflow-hidden' : ''
-                    }`}
+                className={`transition-[max-height] duration-300 ease-in-out ${!isExpanded ? 'overflow-hidden' : ''}`}
                 style={{
                     maxHeight: isExpanded ? `${contentRef.current?.scrollHeight}px` : `${maxHeight}px`,
                     maskImage: (!isExpanded && isOverflowing) ? 'linear-gradient(to bottom, black calc(100% - 40px), transparent 100%)' : 'none',
                     WebkitMaskImage: (!isExpanded && isOverflowing) ? 'linear-gradient(to bottom, black calc(100% - 40px), transparent 100%)' : 'none'
                 }}
-                dangerouslySetInnerHTML={{ __html: content }}
-            />
+            >
+                <MarkdownRenderer content={content} className="text-text-secondary leading-relaxed whitespace-pre-wrap" />
+            </div>
 
             {isOverflowing && (
                 <div className="mt-2 flex justify-start">
