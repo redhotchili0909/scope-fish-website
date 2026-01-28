@@ -15,10 +15,12 @@ export const Layout: React.FC = () => {
             <header className="bg-surface border-b border-border">
                 <div className="container mx-auto px-6 py-5 flex items-center justify-between">
                     {/* Logo */}
-                    <Link to="/" className="group">
-                        <span className="font-serif text-2xl font-semibold text-primary">
-                            FishEye
-                        </span>
+                    <Link to="/" className="group flex items-center">
+                        <img
+                            src="/scope-fish-website/fisheye_logo.svg"
+                            alt="FishEye Logo"
+                            className="h-10 w-auto"
+                        />
                     </Link>
 
                     {/* Desktop Navigation */}

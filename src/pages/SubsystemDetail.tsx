@@ -31,14 +31,19 @@ export const SubsystemDetail: React.FC = () => {
             if (error) {
                 // console.error('Error fetching logs:', error);
             } else if (data) {
-                const formattedLogs: LogEntry[] = data.map((log: DatabaseLogEntry) => ({
-                    id: log.id,
-                    date: new Date(log.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
-                    title: log.title,
-                    content: log.content,
-                    author: log.author,
-                    images: log.images
-                }));
+                const formattedLogs: LogEntry[] = data.map((log: DatabaseLogEntry) => {
+                    // Parse date string directly to avoid timezone issues
+                    const [year, month, day] = log.date.split('-').map(Number);
+                    const dateObj = new Date(year, month - 1, day);
+                    return {
+                        id: log.id,
+                        date: dateObj.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
+                        title: log.title,
+                        content: log.content,
+                        author: log.author,
+                        images: log.images
+                    };
+                });
                 setDynamicLogs(formattedLogs);
             }
         };
@@ -210,63 +215,63 @@ export const SubsystemDetail: React.FC = () => {
                             ) : (
                                 <>
                                     {/* Date header */}
-                            <div className="flex items-center justify-between mb-3">
-                                <div className="flex items-center gap-2">
-                                    <Calendar className="w-4 h-4 text-text-muted" />
-                                    <time className="text-sm font-mono text-text-muted">{entry.date}</time>
-                                </div>
+                                    <div className="flex items-center justify-between mb-3">
+                                        <div className="flex items-center gap-2">
+                                            <Calendar className="w-4 h-4 text-text-muted" />
+                                            <time className="text-sm font-mono text-text-muted">{entry.date}</time>
+                                        </div>
 
-                                {session && entry.isDynamic && (
-                                    <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                        <button
-                                            onClick={() => handleEdit(entry)}
-                                            className="text-xs text-blue-500 hover:text-blue-600 transition-colors"
-                                        >
-                                            Edit
-                                        </button>
-                                        <button
-                                            onClick={() => handleDelete(entry.id)}
-                                            className="text-xs text-red-500 hover:text-red-600 transition-colors"
-                                        >
-                                            Delete
-                                        </button>
+                                        {session && entry.isDynamic && (
+                                            <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                <button
+                                                    onClick={() => handleEdit(entry)}
+                                                    className="text-xs text-blue-500 hover:text-blue-600 transition-colors"
+                                                >
+                                                    Edit
+                                                </button>
+                                                <button
+                                                    onClick={() => handleDelete(entry.id)}
+                                                    className="text-xs text-red-500 hover:text-red-600 transition-colors"
+                                                >
+                                                    Delete
+                                                </button>
+                                            </div>
+                                        )}
                                     </div>
-                                )}
-                            </div>
 
-                            {/* Entry card */}
-                            <div className="card p-6 border-l-4" style={{ borderLeftColor: system.color }}>
-                                <h3 className="font-semibold text-lg mb-3">{entry.title}</h3>
-                                <p className="text-text-secondary leading-relaxed">{entry.content}</p>
+                                    {/* Entry card */}
+                                    <div className="card p-6 border-l-4" style={{ borderLeftColor: system.color }}>
+                                        <h3 className="font-semibold text-lg mb-3">{entry.title}</h3>
+                                        <p className="text-text-secondary leading-relaxed whitespace-pre-wrap">{entry.content}</p>
 
-                                {/* Images */}
-                                {entry.images && entry.images.length > 0 && (
-                                    <div className="mt-4 grid gap-4">
-                                        {entry.images.map((img: { src: string; caption?: string }, imgIndex: number) => (
-                                            <figure key={imgIndex} className="bg-panel border border-border rounded overflow-hidden">
-                                                <img
-                                                    src={img.src}
-                                                    alt={img.caption || entry.title}
-                                                    className="w-full h-auto"
-                                                    onError={(e) => {
-                                                        // Placeholder for missing images
-                                                        (e.target as HTMLImageElement).src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="200" viewBox="0 0 400 200"><rect fill="%23f0f0f0" width="400" height="200"/><text fill="%23888" font-family="sans-serif" font-size="14" x="50%" y="50%" text-anchor="middle" dy=".3em">Image: ' + encodeURIComponent(img.src.split('/').pop() || 'placeholder') + '</text></svg>';
-                                                    }}
-                                                />
-                                                {img.caption && (
-                                                    <figcaption className="px-4 py-2 text-sm text-text-muted italic">
-                                                        {img.caption}
-                                                    </figcaption>
-                                                )}
-                                            </figure>
-                                        ))}
+                                        {/* Images */}
+                                        {entry.images && entry.images.length > 0 && (
+                                            <div className="mt-4 grid gap-4">
+                                                {entry.images.map((img: { src: string; caption?: string }, imgIndex: number) => (
+                                                    <figure key={imgIndex} className="bg-panel border border-border rounded overflow-hidden">
+                                                        <img
+                                                            src={img.src}
+                                                            alt={img.caption || entry.title}
+                                                            className="w-full h-auto"
+                                                            onError={(e) => {
+                                                                // Placeholder for missing images
+                                                                (e.target as HTMLImageElement).src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="200" viewBox="0 0 400 200"><rect fill="%23f0f0f0" width="400" height="200"/><text fill="%23888" font-family="sans-serif" font-size="14" x="50%" y="50%" text-anchor="middle" dy=".3em">Image: ' + encodeURIComponent(img.src.split('/').pop() || 'placeholder') + '</text></svg>';
+                                                            }}
+                                                        />
+                                                        {img.caption && (
+                                                            <figcaption className="px-4 py-2 text-sm text-text-muted italic">
+                                                                {img.caption}
+                                                            </figcaption>
+                                                        )}
+                                                    </figure>
+                                                ))}
+                                            </div>
+                                        )}
+
+                                        {entry.author && (
+                                            <p className="mt-4 text-sm text-text-muted">— {entry.author}</p>
+                                        )}
                                     </div>
-                                )}
-
-                                {entry.author && (
-                                    <p className="mt-4 text-sm text-text-muted">— {entry.author}</p>
-                                )}
-                            </div>
                                 </>
                             )}
                         </motion.article>
