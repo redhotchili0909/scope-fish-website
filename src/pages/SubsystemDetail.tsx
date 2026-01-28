@@ -212,6 +212,7 @@ export const SubsystemDetail: React.FC = () => {
                         >
                             {editingLog && editingLog.id === entry.id ? (
                                 <EditLogForm
+                                    subsystemId={system.id}
                                     log={editingLog}
                                     onSave={handleSaveEdit}
                                     onCancel={handleCancelEdit}

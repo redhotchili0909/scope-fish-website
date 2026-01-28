@@ -283,12 +283,13 @@ export const AddLogForm: React.FC<AddLogFormProps> = ({ subsystemId, onLogAdded 
 };
 
 interface EditLogFormProps {
+    subsystemId: string;
     log: any;
     onSave: (updatedLog: any) => void;
     onCancel: () => void;
 }
 
-export const EditLogForm: React.FC<EditLogFormProps> = ({ log, onSave, onCancel }) => {
+export const EditLogForm: React.FC<EditLogFormProps> = ({ subsystemId, log, onSave, onCancel }) => {
     // Helper to format date string (e.g. "January 1, 2023") back to YYYY-MM-DD
     const formatDateForInput = (dateStr: string) => {
         if (!dateStr) return new Date().toISOString().split('T')[0];
@@ -309,6 +310,41 @@ export const EditLogForm: React.FC<EditLogFormProps> = ({ log, onSave, onCancel 
         images: log.images || []
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [uploading, setUploading] = useState(false);
+
+    const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (!e.target.files || e.target.files.length === 0) return;
+
+        setUploading(true);
+        const files = Array.from(e.target.files);
+        const newImages = [...formData.images];
+
+        try {
+            for (const file of files) {
+                const fileExt = file.name.split('.').pop();
+                const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+                const filePath = `${subsystemId}/${fileName}`;
+
+                const { error: uploadError } = await supabase.storage
+                    .from('log-images')
+                    .upload(filePath, file);
+
+                if (uploadError) throw uploadError;
+
+                const { data } = supabase.storage
+                    .from('log-images')
+                    .getPublicUrl(filePath);
+
+                newImages.push({ src: data.publicUrl, caption: '' });
+            }
+            setFormData({ ...formData, images: newImages });
+        } catch (error) {
+            console.error('Error uploading image:', error);
+            alert('Failed to upload image');
+        } finally {
+            setUploading(false);
+        }
+    };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -371,6 +407,49 @@ export const EditLogForm: React.FC<EditLogFormProps> = ({ log, onSave, onCancel 
                     />
                 </div>
 
+                <div>
+                    <label className="block text-xs font-semibold uppercase tracking-wider text-text-muted mb-1">Images</label>
+                    <label className="block w-full cursor-pointer">
+                        <span className="sr-only">Choose images</span>
+                        <div className="border border-border rounded-lg p-6 flex flex-col items-center justify-center gap-2 hover:bg-panel transition-colors border-dashed bg-bg/50">
+                            <div className="p-2 bg-primary/10 rounded-full text-primary">
+                                <Plus className="w-5 h-5" />
+                            </div>
+                            <span className="text-sm font-medium text-text-muted">Add more images/GIFs</span>
+                        </div>
+                        <input
+                            type="file"
+                            accept="image/*"
+                            multiple
+                            onChange={handleImageUpload}
+                            disabled={uploading}
+                            className="hidden"
+                        />
+                    </label>
+                    {uploading && <p className="text-xs text-primary mt-2">Uploading...</p>}
+
+                    {formData.images.length > 0 && (
+                        <div className="flex gap-2 mt-4 overflow-x-auto pb-2">
+                            {formData.images.map((img: any, i: number) => (
+                                <div key={i} className="relative shrink-0">
+                                    <img src={img.src} alt="Thumbnail" className="w-16 h-16 object-cover rounded border border-border" />
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            const newImages = [...formData.images];
+                                            newImages.splice(i, 1);
+                                            setFormData({ ...formData, images: newImages });
+                                        }}
+                                        className="absolute -top-1 -right-1 bg-bg border border-border rounded-full w-4 h-4 flex items-center justify-center text-xs hover:text-red-500 shadow-sm"
+                                    >
+                                        &times;
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+
                 <div className="flex gap-2 justify-end">
                     <button
                         type="button"
@@ -381,13 +460,13 @@ export const EditLogForm: React.FC<EditLogFormProps> = ({ log, onSave, onCancel 
                     </button>
                     <button
                         type="submit"
-                        disabled={isSubmitting}
+                        disabled={isSubmitting || uploading}
                         className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors disabled:opacity-50"
                     >
                         {isSubmitting ? 'Saving...' : 'Save Changes'}
                     </button>
                 </div>
-            </form>
-        </div>
+            </form >
+        </div >
     );
 };
