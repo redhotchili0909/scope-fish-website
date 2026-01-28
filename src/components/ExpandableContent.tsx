@@ -28,7 +28,7 @@ export const ExpandableContent: React.FC<ExpandableContentProps> = ({ content, m
             />
 
             {isOverflowing && (
-                <div className={`mt-2 flex justify-start ${!isExpanded ? 'absolute bottom-0 left-0 right-0 bg-gradient-to-t from-panel via-panel/80 to-transparent pt-12 pb-1' : ''}`}>
+                <div className="mt-2 flex justify-start">
                     <button
                         onClick={() => setIsExpanded(!isExpanded)}
                         className="text-primary hover:text-primary/80 font-serif font-medium text-sm flex items-center gap-1 focus:outline-none transition-colors"

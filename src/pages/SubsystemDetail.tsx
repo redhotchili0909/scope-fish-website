@@ -246,7 +246,7 @@ export const SubsystemDetail: React.FC = () => {
                                     <div className="card p-6 border-l-4" style={{ borderLeftColor: system.color }}>
                                         <h3 className="font-semibold text-lg mb-1">{entry.title}</h3>
                                         {entry.author && (
-                                            <p className="text-sm text-text-muted mb-4">— {entry.author}</p>
+                                            <p className="text-sm text-text-muted mb-4">{entry.author}</p>
                                         )}
                                         <ExpandableContent content={entry.content} />
 
