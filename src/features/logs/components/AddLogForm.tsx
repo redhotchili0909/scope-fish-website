@@ -65,6 +65,14 @@ export const AddLogForm: React.FC<AddLogFormProps> = ({ subsystemId, onLogAdded 
         e.preventDefault();
         setIsSubmitting(true);
 
+        // Validate content is not empty (strip HTML tags to check)
+        const textContent = formData.content.replace(/<[^>]*>/g, '').trim();
+        if (!textContent) {
+            alert('Please enter some content for the log entry.');
+            setIsSubmitting(false);
+            return;
+        }
+
         try {
             const { error } = await supabase
                 .from('project_logs')
@@ -79,7 +87,10 @@ export const AddLogForm: React.FC<AddLogFormProps> = ({ subsystemId, onLogAdded 
                     }
                 ]);
 
-            if (error) throw error;
+            if (error) {
+                console.error('Supabase error:', error);
+                throw error;
+            }
 
             setFormData({
                 title: '',
@@ -90,9 +101,15 @@ export const AddLogForm: React.FC<AddLogFormProps> = ({ subsystemId, onLogAdded 
             });
             setIsOpen(false);
             onLogAdded();
-        } catch (error) {
+        } catch (error: any) {
             console.error('Error adding log:', error);
-            alert('Failed to add log entry. Are you logged in?');
+            if (error.message?.includes('JWT') || error.message?.includes('auth')) {
+                alert('Authentication error. Please log in again.');
+            } else if (error.code === '42501') {
+                alert('Permission denied. Please make sure you are logged in with the correct account.');
+            } else {
+                alert(`Failed to add log entry: ${error.message || 'Unknown error'}`);
+            }
         } finally {
             setIsSubmitting(false);
         }

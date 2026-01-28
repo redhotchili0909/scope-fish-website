@@ -2,12 +2,13 @@ import React from 'react';
 import { SubsystemCard } from '../features/subsystems/components/SubsystemCard';
 import { subsystems } from '../lib/data';
 import { motion } from 'framer-motion';
-import { Cog, Zap, Code } from 'lucide-react';
+import { Cog, Zap, Code, Briefcase } from 'lucide-react';
 
 const iconMap: Record<string, React.ReactNode> = {
     mechanical: <Cog className="w-5 h-5" />,
     electrical: <Zap className="w-5 h-5" />,
     software: <Code className="w-5 h-5" />,
+    logistics: <Briefcase className="w-5 h-5" />,
 };
 
 export const SubsystemsIndex: React.FC = () => {
@@ -22,11 +23,11 @@ export const SubsystemsIndex: React.FC = () => {
                     <p className="section-heading">Technical Documentation</p>
                     <h1 className="text-3xl md:text-4xl font-serif font-bold mb-4">System Architecture</h1>
                     <p className="text-text-secondary max-w-2xl">
-                        Detailed specifications and design documentation for the three integrated subsystems of the parasite detection platform.
+                        Detailed specifications and design documentation for the four integrated subsystems of the parasite detection platform.
                     </p>
                 </motion.div>
 
-                <div className="grid md:grid-cols-3 gap-6">
+                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
                     {subsystems.map((system, idx) => (
                         <motion.div
                             key={system.id}

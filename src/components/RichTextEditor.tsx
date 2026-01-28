@@ -26,14 +26,35 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange,
     const handlePaste = (e: React.ClipboardEvent) => {
         e.preventDefault();
         const text = e.clipboardData.getData('text/plain');
-        document.execCommand('insertText', false, text);
+        // Convert line breaks to <br> tags for pasted content
+        const htmlText = text.replace(/\n/g, '<br>');
+        document.execCommand('insertHTML', false, htmlText);
     };
 
     React.useEffect(() => {
-        if (editorRef.current && editorRef.current.innerHTML !== value) {
-            editorRef.current.innerHTML = value;
+        if (editorRef.current) {
+            // Convert plain text line breaks to HTML if needed
+            let htmlContent = value;
+
+            // If the content doesn't have HTML tags but has line breaks, convert them
+            if (!value.includes('<br>') && !value.includes('<div>') && !value.includes('<p>') && value.includes('\n')) {
+                htmlContent = value.replace(/\n/g, '<br>');
+            }
+
+            // Only update if content is different to avoid cursor jumping
+            if (editorRef.current.innerHTML !== htmlContent) {
+                editorRef.current.innerHTML = htmlContent;
+            }
         }
     }, [value]);
+
+    const handleKeyDown = (e: React.KeyboardEvent) => {
+        // Handle Enter key to insert <br> instead of creating new divs/paragraphs
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            document.execCommand('insertHTML', false, '<br><br>');
+        }
+    };
 
     return (
         <div className="border border-border rounded overflow-hidden">
@@ -98,6 +119,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange,
                 contentEditable
                 onInput={updateContent}
                 onPaste={handlePaste}
+                onKeyDown={handleKeyDown}
                 className="px-3 py-2 bg-bg min-h-[100px] max-h-[300px] overflow-y-auto focus:outline-none"
                 data-placeholder={placeholder}
                 style={{
