@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
-import { useNavigate } from '@tanstack/react-router';
-import { Lock, Loader2 } from 'lucide-react';
+import { useNavigate, Link } from '@tanstack/react-router';
+import { Lock, Loader2, Cog, Zap, Code, LogOut } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export const Login: React.FC = () => {
@@ -10,6 +10,21 @@ export const Login: React.FC = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState<string | null>(null);
+    const [session, setSession] = useState<any>(null);
+
+    useEffect(() => {
+        // Check current session
+        supabase.auth.getSession().then(({ data: { session } }) => {
+            setSession(session);
+        });
+
+        // Listen for auth changes
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+            setSession(session);
+        });
+
+        return () => subscription.unsubscribe();
+    }, []);
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -24,10 +39,12 @@ export const Login: React.FC = () => {
         if (error) {
             setError(error.message);
             setLoading(false);
-        } else {
-            // Redirect to home or overview
-            navigate({ to: '/' });
         }
+        // Session state will update automatically via onAuthStateChange
+    };
+
+    const handleLogout = async () => {
+        await supabase.auth.signOut();
     };
 
     return (
