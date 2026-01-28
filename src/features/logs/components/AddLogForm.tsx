@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { supabase } from '../../../lib/supabase';
 import { Plus, X, Loader2 } from 'lucide-react';
+import { RichTextEditor } from '../../../components/RichTextEditor';
 
 interface AddLogFormProps {
     subsystemId: string;
@@ -182,13 +183,10 @@ export const AddLogForm: React.FC<AddLogFormProps> = ({ subsystemId, onLogAdded 
 
                         <div>
                             <label className="block text-xs font-semibold uppercase tracking-wider text-text-muted mb-1">Details</label>
-                            <textarea
-                                required
-                                placeholder="Describe progress, findings, or blocking issues..."
-                                rows={4}
+                            <RichTextEditor
                                 value={formData.content}
-                                onChange={e => setFormData({ ...formData, content: e.target.value })}
-                                className="w-full px-3 py-2 bg-bg border border-border rounded focus:border-primary focus:outline-none transition-colors resize-y"
+                                onChange={(content) => setFormData({ ...formData, content })}
+                                placeholder="Describe progress, findings, or blocking issues..."
                             />
                         </div>
 
@@ -337,12 +335,10 @@ export const EditLogForm: React.FC<EditLogFormProps> = ({ log, onSave, onCancel 
 
                 <div>
                     <label className="block text-xs font-semibold uppercase tracking-wider text-text-muted mb-1">Content</label>
-                    <textarea
+                    <RichTextEditor
                         value={formData.content}
-                        onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                        className="w-full px-3 py-2 bg-panel border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 min-h-[100px]"
+                        onChange={(content) => setFormData({ ...formData, content })}
                         placeholder="Describe what happened..."
-                        required
                     />
                 </div>
 

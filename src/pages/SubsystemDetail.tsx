@@ -3,13 +3,14 @@ import { useParams, Link } from '@tanstack/react-router';
 import { subsystems, LogEntry } from '../lib/data';
 import { supabase, DatabaseLogEntry } from '../lib/supabase';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Cog, Zap, Code, Calendar } from 'lucide-react';
+import { ArrowLeft, Cog, Zap, Code, Calendar, Briefcase } from 'lucide-react';
 import { AddLogForm, EditLogForm } from '../features/logs/components/AddLogForm';
 
 const iconMap: Record<string, React.ReactNode> = {
     mechanical: <Cog className="w-5 h-5" />,
     electrical: <Zap className="w-5 h-5" />,
     software: <Code className="w-5 h-5" />,
+    logistics: <Briefcase className="w-5 h-5" />,
 };
 
 export const SubsystemDetail: React.FC = () => {
@@ -242,7 +243,10 @@ export const SubsystemDetail: React.FC = () => {
                                     {/* Entry card */}
                                     <div className="card p-6 border-l-4" style={{ borderLeftColor: system.color }}>
                                         <h3 className="font-semibold text-lg mb-3">{entry.title}</h3>
-                                        <p className="text-text-secondary leading-relaxed whitespace-pre-wrap">{entry.content}</p>
+                                        <div
+                                            className="text-text-secondary leading-relaxed whitespace-pre-wrap"
+                                            dangerouslySetInnerHTML={{ __html: entry.content }}
+                                        />
 
                                         {/* Images */}
                                         {entry.images && entry.images.length > 0 && (
@@ -252,7 +256,7 @@ export const SubsystemDetail: React.FC = () => {
                                                         <img
                                                             src={img.src}
                                                             alt={img.caption || entry.title}
-                                                            className="w-full h-auto"
+                                                            className="w-full h-auto max-h-[500px] object-contain"
                                                             onError={(e) => {
                                                                 // Placeholder for missing images
                                                                 (e.target as HTMLImageElement).src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="200" viewBox="0 0 400 200"><rect fill="%23f0f0f0" width="400" height="200"/><text fill="%23888" font-family="sans-serif" font-size="14" x="50%" y="50%" text-anchor="middle" dy=".3em">Image: ' + encodeURIComponent(img.src.split('/').pop() || 'placeholder') + '</text></svg>';

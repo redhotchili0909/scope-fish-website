@@ -36,6 +36,13 @@ export const subsystems: Subsystem[] = [
         description: 'Computer vision pipeline for real-time parasite detection and path planning for extraction.',
         overview: 'The software subsystem runs an OpenCV-based vision pipeline for real-time nematode detection. It includes camera calibration, contrast enhancement, blob detection, and coordinate mapping to gantry space. A greedy path planning algorithm optimizes extraction order, and a web-based interface provides monitoring and control.',
         color: '#166534'
+    },
+    {
+        id: 'logistics',
+        title: 'Logistics',
+        description: 'Project management, coordination, and resource planning for the FishEye system development.',
+        overview: 'The logistics subsystem manages project timeline, team coordination, budget tracking, vendor communications, and integration planning. This includes sprint planning, milestone tracking, documentation management, and ensuring all technical subsystems align with project goals and deadlines.',
+        color: '#7c3aed'
     }
 ];
 

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { Link } from '@tanstack/react-router';
-import { Lock, Loader2, Cog, Zap, Code, LogOut } from 'lucide-react';
+import { Lock, Loader2, Cog, Zap, Code, LogOut, Briefcase } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export const Login: React.FC = () => {
@@ -52,7 +52,8 @@ export const Login: React.FC = () => {
         const subsystems = [
             { id: 'mechanical', title: 'Mechanical', icon: Cog, color: '#1e3a5f' },
             { id: 'electrical', title: 'Electrical', icon: Zap, color: '#8b2332' },
-            { id: 'software', title: 'Software', icon: Code, color: '#166534' }
+            { id: 'software', title: 'Software', icon: Code, color: '#166534' },
+            { id: 'logistics', title: 'Logistics', icon: Briefcase, color: '#7c3aed' }
         ];
 
         return (
