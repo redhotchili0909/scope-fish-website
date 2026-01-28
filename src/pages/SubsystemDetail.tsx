@@ -5,6 +5,7 @@ import { supabase, DatabaseLogEntry } from '../lib/supabase';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Cog, Zap, Code, Calendar, Briefcase } from 'lucide-react';
 import { AddLogForm, EditLogForm } from '../features/logs/components/AddLogForm';
+import { ImageGallery } from '../components/ImageGallery';
 
 const iconMap: Record<string, React.ReactNode> = {
     mechanical: <Cog className="w-5 h-5" />,
@@ -250,26 +251,10 @@ export const SubsystemDetail: React.FC = () => {
 
                                         {/* Images */}
                                         {entry.images && entry.images.length > 0 && (
-                                            <div className="mt-4 grid gap-4">
-                                                {entry.images.map((img: { src: string; caption?: string }, imgIndex: number) => (
-                                                    <figure key={imgIndex} className="bg-panel border border-border rounded overflow-hidden">
-                                                        <img
-                                                            src={img.src}
-                                                            alt={img.caption || entry.title}
-                                                            className="w-full h-auto max-h-[500px] object-contain"
-                                                            onError={(e) => {
-                                                                // Placeholder for missing images
-                                                                (e.target as HTMLImageElement).src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="200" viewBox="0 0 400 200"><rect fill="%23f0f0f0" width="400" height="200"/><text fill="%23888" font-family="sans-serif" font-size="14" x="50%" y="50%" text-anchor="middle" dy=".3em">Image: ' + encodeURIComponent(img.src.split('/').pop() || 'placeholder') + '</text></svg>';
-                                                            }}
-                                                        />
-                                                        {img.caption && (
-                                                            <figcaption className="px-4 py-2 text-sm text-text-muted italic">
-                                                                {img.caption}
-                                                            </figcaption>
-                                                        )}
-                                                    </figure>
-                                                ))}
-                                            </div>
+                                            <ImageGallery
+                                                images={entry.images}
+                                                title={entry.title}
+                                            />
                                         )}
 
                                         {entry.author && (
