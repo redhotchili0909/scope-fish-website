@@ -244,7 +244,10 @@ export const SubsystemDetail: React.FC = () => {
 
                                     {/* Entry card */}
                                     <div className="card p-6 border-l-4" style={{ borderLeftColor: system.color }}>
-                                        <h3 className="font-semibold text-lg mb-3">{entry.title}</h3>
+                                        <h3 className="font-semibold text-lg mb-1">{entry.title}</h3>
+                                        {entry.author && (
+                                            <p className="text-sm text-text-muted mb-4">— {entry.author}</p>
+                                        )}
                                         <ExpandableContent content={entry.content} />
 
                                         {/* Images */}
@@ -255,9 +258,7 @@ export const SubsystemDetail: React.FC = () => {
                                             />
                                         )}
 
-                                        {entry.author && (
-                                            <p className="mt-4 text-sm text-text-muted">— {entry.author}</p>
-                                        )}
+
                                     </div>
                                 </>
                             )}
