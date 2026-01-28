@@ -23,7 +23,11 @@ export const ExpandableContent: React.FC<ExpandableContentProps> = ({ content, m
                 ref={contentRef}
                 className={`text-text-secondary leading-relaxed whitespace-pre-wrap transition-[max-height] duration-300 ease-in-out ${!isExpanded ? 'overflow-hidden' : ''
                     }`}
-                style={{ maxHeight: isExpanded ? `${contentRef.current?.scrollHeight}px` : `${maxHeight}px` }}
+                style={{
+                    maxHeight: isExpanded ? `${contentRef.current?.scrollHeight}px` : `${maxHeight}px`,
+                    maskImage: !isExpanded ? 'linear-gradient(to bottom, black calc(100% - 40px), transparent 100%)' : 'none',
+                    WebkitMaskImage: !isExpanded ? 'linear-gradient(to bottom, black calc(100% - 40px), transparent 100%)' : 'none'
+                }}
                 dangerouslySetInnerHTML={{ __html: content }}
             />
 
