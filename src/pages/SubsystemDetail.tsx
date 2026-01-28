@@ -6,6 +6,7 @@ import { motion } from 'framer-motion';
 import { ArrowLeft, Cog, Zap, Code, Calendar, Briefcase } from 'lucide-react';
 import { AddLogForm, EditLogForm } from '../features/logs/components/AddLogForm';
 import { ImageGallery } from '../components/ImageGallery';
+import { ExpandableContent } from '../components/ExpandableContent';
 
 const iconMap: Record<string, React.ReactNode> = {
     mechanical: <Cog className="w-5 h-5" />,
@@ -244,10 +245,7 @@ export const SubsystemDetail: React.FC = () => {
                                     {/* Entry card */}
                                     <div className="card p-6 border-l-4" style={{ borderLeftColor: system.color }}>
                                         <h3 className="font-semibold text-lg mb-3">{entry.title}</h3>
-                                        <div
-                                            className="text-text-secondary leading-relaxed whitespace-pre-wrap"
-                                            dangerouslySetInnerHTML={{ __html: entry.content }}
-                                        />
+                                        <ExpandableContent content={entry.content} />
 
                                         {/* Images */}
                                         {entry.images && entry.images.length > 0 && (
