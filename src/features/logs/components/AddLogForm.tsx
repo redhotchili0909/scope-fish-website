@@ -215,8 +215,8 @@ export const AddLogForm: React.FC<AddLogFormProps> = ({ subsystemId, onLogAdded 
                                     <div className="p-3 bg-primary/10 rounded-full text-primary">
                                         <Plus className="w-6 h-6" />
                                     </div>
-                                    <span className="text-sm font-medium text-text-muted">Click to Upload Images</span>
-                                    <span className="text-xs text-text-muted/50">JPG, PNG, WEBP</span>
+                                    <span className="text-sm font-medium text-text-muted">Click to Upload Images or GIFs</span>
+                                    <span className="text-xs text-text-muted/50">JPG, PNG, GIF, WEBP</span>
                                 </div>
                                 <input
                                     type="file"

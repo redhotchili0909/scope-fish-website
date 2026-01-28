@@ -1,5 +1,6 @@
-import React, { useRef, useState } from 'react';
-import { Bold, Italic, Underline, Type, Link as LinkIcon } from 'lucide-react';
+import React, { useRef, useState, useEffect } from 'react';
+import { Bold, Italic, Underline, Type, Link as LinkIcon, Smile, Image as ImageIcon } from 'lucide-react';
+import EmojiPicker, { EmojiClickData } from 'emoji-picker-react';
 
 interface RichTextEditorProps {
     value: string;
@@ -10,6 +11,21 @@ interface RichTextEditorProps {
 export const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange, placeholder }) => {
     const editorRef = useRef<HTMLDivElement>(null);
     const [fontSize, setFontSize] = useState('16');
+    const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+    const emojiPickerRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (emojiPickerRef.current && !emojiPickerRef.current.contains(event.target as Node)) {
+                setShowEmojiPicker(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
 
     const applyFormat = (command: string, value?: string) => {
         document.execCommand(command, false, value);
@@ -26,6 +42,30 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange,
             document.execCommand('insertText', false, markdownLink);
             updateContent();
         }
+    };
+
+    const insertImage = () => {
+        let url = prompt('Enter the Image/GIF URL (or Giphy Link):', 'https://');
+        if (url) {
+            // Smart Giphy Handling: Convert Giphy page URLs to direct image URLs
+            // Example: https://giphy.com/gifs/cat-funny-12345 -> https://media.giphy.com/media/12345/giphy.gif
+            const giphyMatch = url.match(/giphy\.com\/gifs\/(?:.*-)?([a-zA-Z0-9]+)$/);
+            if (giphyMatch && giphyMatch[1]) {
+                const giphyId = giphyMatch[1];
+                url = `https://media.giphy.com/media/${giphyId}/giphy.gif`;
+            }
+
+            const alt = prompt('Enter alt text (optional):', 'Image');
+            const markdownImage = `![${alt}](${url})`;
+            document.execCommand('insertText', false, markdownImage);
+            updateContent();
+        }
+    };
+
+    const onEmojiClick = (emojiData: EmojiClickData) => {
+        document.execCommand('insertText', false, emojiData.emoji);
+        updateContent();
+        // Don't close picker immediately to allow selecting multiple
     };
 
     const updateContent = () => {
@@ -68,7 +108,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange,
     };
 
     return (
-        <div className="border border-border rounded overflow-hidden">
+        <div className="border border-border rounded overflow-hidden relative">
             {/* Toolbar */}
             <div className="bg-panel border-b border-border p-2 flex items-center gap-1 flex-wrap">
                 <button
@@ -103,6 +143,30 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange,
                 >
                     <LinkIcon className="w-4 h-4" />
                 </button>
+                <button
+                    type="button"
+                    onClick={insertImage}
+                    className="p-2 hover:bg-bg rounded transition-colors"
+                    title="Insert Image/GIF URL (Markdown)"
+                >
+                    <ImageIcon className="w-4 h-4" />
+                </button>
+
+                <div className="relative" ref={emojiPickerRef}>
+                    <button
+                        type="button"
+                        onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                        className={`p-2 hover:bg-bg rounded transition-colors ${showEmojiPicker ? 'bg-bg text-primary' : ''}`}
+                        title="Insert Emoji"
+                    >
+                        <Smile className="w-4 h-4" />
+                    </button>
+                    {showEmojiPicker && (
+                        <div className="absolute top-full left-0 mt-2 z-50 shadow-xl">
+                            <EmojiPicker onEmojiClick={onEmojiClick} width={300} height={400} />
+                        </div>
+                    )}
+                </div>
 
                 <div className="w-px h-6 bg-border mx-1" />
 
