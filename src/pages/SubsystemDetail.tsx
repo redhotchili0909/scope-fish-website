@@ -29,7 +29,8 @@ export const SubsystemDetail: React.FC = () => {
                 .from('project_logs')
                 .select('*')
                 .eq('subsystem_id', id)
-                .order('date', { ascending: false });
+                .order('date', { ascending: false })
+                .order('created_at', { ascending: false });
 
             if (error) {
                 // console.error('Error fetching logs:', error);
