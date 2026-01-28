@@ -25,8 +25,8 @@ export const ExpandableContent: React.FC<ExpandableContentProps> = ({ content, m
                     }`}
                 style={{
                     maxHeight: isExpanded ? `${contentRef.current?.scrollHeight}px` : `${maxHeight}px`,
-                    maskImage: !isExpanded ? 'linear-gradient(to bottom, black calc(100% - 40px), transparent 100%)' : 'none',
-                    WebkitMaskImage: !isExpanded ? 'linear-gradient(to bottom, black calc(100% - 40px), transparent 100%)' : 'none'
+                    maskImage: (!isExpanded && isOverflowing) ? 'linear-gradient(to bottom, black calc(100% - 40px), transparent 100%)' : 'none',
+                    WebkitMaskImage: (!isExpanded && isOverflowing) ? 'linear-gradient(to bottom, black calc(100% - 40px), transparent 100%)' : 'none'
                 }}
                 dangerouslySetInnerHTML={{ __html: content }}
             />
